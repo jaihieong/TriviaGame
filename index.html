@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Trivia Game</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <link rel="stylesheet" href="assets/css/style.css">
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="row justify-content-md-center">
+                <h1>World Cup Trivia</h1>
+            </div>
+
+            <div class="row justify-content-md-center" id ="display-time">
+                <h3>Time Remaining: <span id="time-remaining">timeCount</span></h3>
+            </div>
+
+            <div class="row justify-content-md-center" id="display-question">
+                <h4 id="question">Randomly chosen questions will be displayed here</h4>
+            </div>
+
+            <div class="row justify-content-md-center" id="display-content">
+                    <button id="start-button">START GAME</button>
+                <div class="col-12">   
+                    
+
+                    <div class="row answers">
+                        </div>
+                        <div class="row justify-content-md-center">   
+                            <button id="choice0">Answer Choice 1</button>  
+                        </div>
+                        <div class="row justify-content-md-center">   
+                            <button id="choice1">Answer Choice 2</button>  
+                        </div>
+                        <div class="row justify-content-md-center">   
+                            <button id="choice2">Answer Choice 3</button>  
+                        </div>
+                        <div class="row justify-content-md-center">   
+                            <button id="choice3">Answer Choice 4</button>  
+                        </div>
+                    </div>
+
+                <div id="result-page">
+                    <div id="result">
+
+                    </div>
+                    <div id="result-image">
+
+                    </div>
+                </div> <!---   display-content div  --->
+            </div> 
+        </div>
+        
+
+       
+        
+        
+        
+        <script type="text/javascript" src="assets/javascript/app.js"></script>  
+    </body>
+
+</html>
