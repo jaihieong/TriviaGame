@@ -53,6 +53,7 @@ $(document).ready(function() {
         console.log("choice 1 clicked");
         answerSelected = 0;
         displayResult();
+        stopTime();
     });
     
     $("#choice1").on("click", function() 
@@ -60,6 +61,7 @@ $(document).ready(function() {
         console.log("choice 2 clicked");
         answerSelected = 1;
         displayResult();
+        stopTime();
     });
     
     $("#choice2").on("click", function() 
@@ -67,6 +69,7 @@ $(document).ready(function() {
         console.log("choice 3 clicked");
         answerSelected = 2;
         displayResult();
+        stopTime();
     });
     
     $("#choice3").on("click", function() 
@@ -74,13 +77,12 @@ $(document).ready(function() {
         console.log("choice 4 clicked");
         answerSelected = 3;
         displayResult();
+        stopTime();
     });
 
     $("#start-button").on("click", function() {
         console.log("start button clicked");
-        // start the game by displaying the first questions
         startGame();
-        showQuestion = setInterval(nextQuestion, 5000);
     });
 });
 // <--- event listeners
@@ -88,25 +90,34 @@ $(document).ready(function() {
 
 //////////////////////////////////////////////////////////////////
 // Time Count --->
-var time = 10;
+var time;
 var intervalID;
 
 function decrement() {
     time--;
     $("#time-remaining").html("<h2>" + time + "</h2>");
     
-    if (time <= 0) {
-        stop();
+    if (time === 0) {
+        stopTime();
+        if (count < questions.length){
+            displayResult();
+        }
     }
 };
 
-function stop() {
+function stopTime() {
     clearInterval(intervalID);
+    $("#time-remaining").hide();
+    // if (count < questions.length) {
+    //     displayResult();
+    // }
 };
 
 function runTime() {
-    $("#time-remaining").html("<h2>" + time + "</h2>");
     clearInterval(intervalID);
+    time = 5;
+    $("#time-remaining").html("<h2>" + time + "</h2>");
+    $("#time-remaining").show();
     intervalID = setInterval(decrement, 1000);
 };
 // <--- time count
@@ -118,7 +129,15 @@ function initGame() {
     count = 0;
     counterCorrect = 0;
     counterIncorrect = 0;
+    counterTimeout = 0;
     $("#start-button").show();
+    hideMainContents();
+    $("#result-correct").hide();
+    $("#result-incorrect").hide();
+    $("#result-unanswered").hide();
+};
+
+function hideMainContents() {
     $("#display-time").hide();
     $("#display-question").hide();
     $("#choice0").hide();
@@ -127,62 +146,110 @@ function initGame() {
     $("#choice3").hide();
 };
 
-function startGame() {
+function showMainContents() {
     $("#display-time").show();
     $("#display-question").show();
     $("#choice0").show();
     $("#choice1").show();
     $("#choice2").show();
     $("#choice3").show();
+};
+    
+
+function startGame() {
     $("#start-button").hide();
-    displayContent();
+    showMainContents();
+    modifyMainContents();
+    runTime();
 };
 
-function checkAnswer(userChoice) {
-    if (userChoice === questions[count].indexCorrect) {
-        console.log("correct!");
-        counterCorrect++;
-        return true;
-    } else {
-        console.log("incorrect =(");
-        counterIncorrect++;
-        return false;
-    }
-};
-
-function displayContent() {  
+function modifyMainContents() {  
     // display question on browser
     $("#question").html("<h3>" + questions[count].question + "</h3>");
     // display answer choices on browser
     for (var i = 0; i< questions[count].answers.length; i++) {
         $("#choice" + i).html("<p>" + questions[count].answers[i] + "</p>");
     }
-    console.log("Correct Answer: " + questions[count].indexCorrect);
+    // log out the correct answer in console.
+    // console.log("Correct Answer: " + questions[count].indexCorrect);
 };
 
-function nextQuestion() {
-    count++;
-    // run this funtion only until the length of the questions array
-    if (count < questions.length){
-        displayContent();
-    // stops showing next question when questions array length is reached
+
+function checkAnswer(userChoice) {
+    // stopTime(); If time is stopped here, program does not run.
+    var result;
+    if (userChoice === questions[count].indexCorrect) {
+        counterCorrect++;
+        result = true;
     } else {
-        count = 0;
-        clearInterval(showQuestion);
-        initGame();
+        counterIncorrect++;
+        result = false;
     }
+    
+    return result;
 };
 
 function displayResult() {
+    
+    hideMainContents();
+    
     var imageResult = $("<img>");
-    if (checkAnswer(answerSelected)) {
-        imageResult.attr("src","assets/images/correct.jpg");
+    if (time > 0) {
+        if (checkAnswer(answerSelected)) {
+            imageResult.attr("src", "assets/images/correct.jpg");
+            console.log("correct");
+        } else {
+            imageResult.attr("src", "assets/images/incorrect.jpg");
+            console.log("incorrect");
+        }
     } else {
         imageResult.attr("src", "assets/images/incorrect.jpg");
+        counterTimeout++;
+        console.log("timeout");
     }
+    
     $("#result-image").html(imageResult);
+    $("#result-image").show();
+    // show the result for 3 seconds
+    
+    if (count < questions.length){
+        setTimeout(nextQuestion, 3000);
+    }
     // display counter
 };
+
+function nextQuestion() {
+    // $("#time-remaining").hide();
+    $("#result-image").hide();
+    count++;
+    runTime();
+    
+    // run this funtion only until the length of the questions array
+    if (count < questions.length){
+        showMainContents();
+        modifyMainContents();
+    // stops showing next question when questions array length is reached
+    } else {
+        resultPage();
+    }
+};
+
+function resultPage() {
+    
+    $("#result-correct").text("Number of Correct Answers: " + counterCorrect);
+    $("#result-incorrect").text("Number of Incorrect Answers: " + counterIncorrect);
+    $("#result-unanswered").text("Number of questions NOT answered: " + counterTimeout);
+    $("#result-correct").show();
+    $("#result-incorrect").show();
+    $("#result-unanswered").show();
+    hideMainContents();
+    var btnStartAgain = $("#start-button").text("Start GAME again");
+    btnStartAgain.show();
+    setTimeout(initGame, 5000);
+    console.log("this is result page");
+};
+
+
 // <--- functions 
 ////////////////////////////////////////////////////////////////////
 
