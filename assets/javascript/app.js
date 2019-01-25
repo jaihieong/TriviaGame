@@ -5,44 +5,39 @@ var showQuestion;
 var showResult;
 var showResultPage;
 /////////////////////////////////////////////////////////////
-questions = [];
-
-questions[0] = {
+questions = [
+    {
     question: "Which sport is played during the World Cup?",
     answers: ["baseball", "basketball", "soccer", "hockey"],
     indexCorrect: 2
-};
-
-questions[1] = {
+    },
+    {
     question: "Which country holds the most number of titles throught the history of the World Cup?",
     answers: ["Italy", "Brazil", "United States", "France"],
     indexCorrect: 1
-
-};
-
-questions[2] = {
+    },
+    {
     question: "Which country hosted and became the title winner of the very first World Cup in 1930?",
     answers: ["Mexico", "Argentina", "Portugal", "Uruguay"],
     indexCorrect: 3
-};
-
-questions[3] = {
+    },
+    {
     question: "The smallest country (in terms of population) to ever compete in the World Cup is:",
     answers: ["Iceland", "Korea", "Chile", "Italy"],
     indexCorrect: 0
-};
-
-questions[4] = {
+    },
+    {
     question: "What is USA's best ever result in World Cups which took place in the very first tournament?",
     answers: ["First", "Second", "Third", "Fourth"],
     indexCorrect: 2
-};
-
-questions[5] = {
+    },
+    {
     question: "Which country scored the most goals of 10 in a single match?",
     answers: ["Hungary", "Argentina", "Spain", "Poland"],
     indexCorrect: 0
-};
+    },
+];
+
 
 /////////////////////////////////////////////////////////////
 // event listeners --->
@@ -115,7 +110,7 @@ function stopTime() {
 
 function runTime() {
     clearInterval(intervalID);
-    time = 5;
+    time = 15;
     $("#time-remaining").html("<h2>" + time + "</h2>");
     $("#time-remaining").show();
     intervalID = setInterval(decrement, 1000);
@@ -135,6 +130,8 @@ function initGame() {
     $("#result-correct").hide();
     $("#result-incorrect").hide();
     $("#result-unanswered").hide();
+    $("#result").hide();
+    $("#correct-answer").hide();
 };
 
 function hideMainContents() {
@@ -144,6 +141,7 @@ function hideMainContents() {
     $("#choice1").hide();
     $("#choice2").hide();
     $("#choice3").hide();
+    
 };
 
 function showMainContents() {
@@ -153,6 +151,8 @@ function showMainContents() {
     $("#choice1").show();
     $("#choice2").show();
     $("#choice3").show();
+    $("#result").hide();
+    $("#correct-answer").hide();
 };
     
 
@@ -171,7 +171,8 @@ function modifyMainContents() {
         $("#choice" + i).html("<p>" + questions[count].answers[i] + "</p>");
     }
     // log out the correct answer in console.
-    // console.log("Correct Answer: " + questions[count].indexCorrect);
+    console.log("Correct Answer: " + questions[count].indexCorrect);
+    console.log(questions[count].answers[questions[count].indexCorrect]);
 };
 
 
@@ -194,20 +195,33 @@ function displayResult() {
     hideMainContents();
     
     var imageResult = $("<img>");
+    var answerCorrect;
+    var result;
     if (time > 0) {
         if (checkAnswer(answerSelected)) {
             imageResult.attr("src", "assets/images/correct.jpg");
+            result = "You are correct !";
+            $("#correct-answer").text("");
             console.log("correct");
         } else {
             imageResult.attr("src", "assets/images/incorrect.jpg");
             console.log("incorrect");
+            result = "Wrong!";
+            answerCorrect = questions[count].answers[questions[count].indexCorrect];
+            $("#correct-answer").text("Correct Answer was: "+ answerCorrect);
         }
     } else {
         imageResult.attr("src", "assets/images/incorrect.jpg");
+        result = "Sorry, you're out of time"
         counterTimeout++;
+        answerCorrect = questions[count].answers[questions[count].indexCorrect];
+        $("#correct-answer").text("Correct Answer was: "+ answerCorrect);
         console.log("timeout");
     }
-    
+    $("#result").text(result);
+    $("#result").show();
+    $("#correct-answer").show();
+    console.log(answerCorrect);
     $("#result-image").html(imageResult);
     $("#result-image").show();
     // show the result for 3 seconds
@@ -242,10 +256,14 @@ function resultPage() {
     $("#result-correct").show();
     $("#result-incorrect").show();
     $("#result-unanswered").show();
+    $("#result").hide();
+    $("#correct-answer").hide();
     hideMainContents();
+    stopTime();
     var btnStartAgain = $("#start-button").text("Start GAME again");
-    btnStartAgain.show();
+    
     setTimeout(initGame, 5000);
+    
     console.log("this is result page");
 };
 
@@ -253,21 +271,4 @@ function resultPage() {
 // <--- functions 
 ////////////////////////////////////////////////////////////////////
 
-////////////////////////////////////////////////////////////////////
-// run the program
-
 initGame();
-
-// display title, start button
-
-// when start game is clicked
-// display the first question
-
-// if answer is clicked
-    // if correct
-    // show correct image
-    // increment correct count
-
-    // else
-    // show inccorrect image
-    // increment incorrect count
